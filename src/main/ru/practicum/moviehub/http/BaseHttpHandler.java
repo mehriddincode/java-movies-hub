@@ -24,7 +24,7 @@ public abstract class BaseHttpHandler implements HttpHandler {
     protected void sendNotFound(HttpExchange h, String text) throws IOException {
         sendText(h, gson.toJson(new ErrorResponse(text)), 404);
     }
-    
+
     protected void sendHasInteractions(HttpExchange h, String text) throws IOException {
         sendText(h, gson.toJson(new ErrorResponse(text)), 406);
     }
