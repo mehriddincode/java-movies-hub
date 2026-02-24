@@ -35,16 +35,15 @@ public class MoviesServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             try {
-                String method = exchange.getRequestMethod();
-                if ("GET".equals(method)) {
+                RequestMethod requestMethod = RequestMethod.from(exchange.getRequestMethod());
+                if (requestMethod == RequestMethod.GET) {
                     String response = gson.toJson(store.getAll());
                     sendText(exchange, response, 200);
                 } else {
-                    sendNotFound(exchange, "Method Not Allowed");
+                    sendMethodNotAllowed(exchange, "Method Not Allowed");
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                sendText(exchange, "{\"message\":\"Internal Server Error\"}", 500);
+            } catch (Exception exception) {
+                sendInternalServerError(exchange, "Internal Server Error");
             } finally {
                 exchange.close();
             }

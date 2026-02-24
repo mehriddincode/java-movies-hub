@@ -12,20 +12,28 @@ import java.nio.charset.StandardCharsets;
 public abstract class BaseHttpHandler implements HttpHandler {
     protected final Gson gson = new Gson();
 
-    protected void sendText(HttpExchange h, String text, int statusCode) throws IOException {
-        byte[] resp = text.getBytes(StandardCharsets.UTF_8);
-        h.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
-        h.sendResponseHeaders(statusCode, resp.length);
-        try (OutputStream os = h.getResponseBody()) {
-            os.write(resp);
+    protected void sendText(HttpExchange exchange, String responseText, int statusCode) throws IOException {
+        byte[] responseBytes = responseText.getBytes(StandardCharsets.UTF_8);
+        exchange.getResponseHeaders().add("Content-Type", "application/json;charset=utf-8");
+        exchange.sendResponseHeaders(statusCode, responseBytes.length);
+        try (OutputStream outputStream = exchange.getResponseBody()) {
+            outputStream.write(responseBytes);
         }
     }
 
-    protected void sendNotFound(HttpExchange h, String text) throws IOException {
-        sendText(h, gson.toJson(new ErrorResponse(text)), 404);
+    protected void sendNotFound(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, gson.toJson(new ErrorResponse(message)), 404);
     }
 
-    protected void sendHasInteractions(HttpExchange h, String text) throws IOException {
-        sendText(h, gson.toJson(new ErrorResponse(text)), 406);
+    protected void sendHasInteractions(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, gson.toJson(new ErrorResponse(message)), 406);
+    }
+
+    protected void sendMethodNotAllowed(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, gson.toJson(new ErrorResponse(message)), 405);
+    }
+
+    protected void sendInternalServerError(HttpExchange exchange, String message) throws IOException {
+        sendText(exchange, gson.toJson(new ErrorResponse(message)), 500);
     }
 }

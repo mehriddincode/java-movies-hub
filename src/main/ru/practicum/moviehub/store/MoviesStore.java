@@ -2,12 +2,13 @@ package ru.practicum.moviehub.store;
 
 import ru.practicum.moviehub.model.Movie;
 
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MoviesStore {
-    private final Map<Integer, Movie> movies = new HashMap<>();
+    private final Map<Integer, Movie> movies = new LinkedHashMap<>();
     private int nextId = 1;
 
     public Movie add(Movie movie) {
@@ -16,8 +17,8 @@ public class MoviesStore {
         return movie;
     }
 
-    public Collection<Movie> getAll() {
-        return movies.values();
+    public List<Movie> getAll() {
+        return new ArrayList<>(movies.values());
     }
 
     public void clear() {
